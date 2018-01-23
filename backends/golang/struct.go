@@ -26,12 +26,12 @@ func (w *Walker) WalkStruct(s *schema.Struct) (parts *StringBuilder, err error) 
 	}
 	if !s.Framed {
 		parts.Append(fmt.Sprintf(`}
-	
-func (d *%s) Size() (s uint64) {
+
+func (d *%s) MarshaledSize() (s uint64) {
 	`, s.Name))
 	} else {
 		parts.Append(fmt.Sprintf(`}
-	
+
 func (d *%s) FramedSize() (s uint64, us uint64) {
 	`, s.Name))
 	}
@@ -60,12 +60,12 @@ func (d *%s) FramedSize() (s uint64, us uint64) {
 		parts.Join(intcode)
 	}
 	parts.Append(fmt.Sprintf(`
-	return 
+	return
 }`))
 
 	if s.Framed {
 		parts.Append(fmt.Sprintf(`
-func (d *%s) Size() (s uint64) {
+func (d *%s) MarshaledSize() (s uint64) {
 	s, _ = d.FramedSize()
 	return
 }
@@ -79,7 +79,7 @@ func (d *%s) Marshal(buf []byte) ([]byte, error) {`, s.Name))
 	size, usize := d.FramedSize()`)
 	} else {
 		parts.Append(`
-	size := d.Size()`)
+	size := d.MarshaledSize()`)
 	}
 	parts.Append(`
 	{
@@ -108,7 +108,7 @@ func (d *%s) Marshal(buf []byte) ([]byte, error) {`, s.Name))
 	parts.Append(fmt.Sprintf(`
 	return buf[:i+%d], nil
 }
-	
+
 func (d *%s) Unmarshal(buf []byte) (uint64, error) {
 	i := uint64(0)
 	`, w.Offset, s.Name))

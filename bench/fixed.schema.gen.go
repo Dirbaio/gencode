@@ -17,13 +17,13 @@ type Fixed struct {
 	D float64
 }
 
-func (d *Fixed) Size() (s uint64) {
+func (d *Fixed) MarshaledSize() (s uint64) {
 
 	s += 24
 	return
 }
 func (d *Fixed) Marshal(buf []byte) ([]byte, error) {
-	size := d.Size()
+	size := d.MarshaledSize()
 	{
 		if uint64(cap(buf)) >= size {
 			buf = buf[:size]

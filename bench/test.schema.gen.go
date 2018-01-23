@@ -18,7 +18,7 @@ type Person struct {
 	Height float64
 }
 
-func (d *Person) Size() (s uint64) {
+func (d *Person) MarshaledSize() (s uint64) {
 
 	{
 		l := uint64(len(d.Name))
@@ -39,7 +39,7 @@ func (d *Person) Size() (s uint64) {
 	return
 }
 func (d *Person) Marshal(buf []byte) ([]byte, error) {
-	size := d.Size()
+	size := d.MarshaledSize()
 	{
 		if uint64(cap(buf)) >= size {
 			buf = buf[:size]
@@ -173,7 +173,7 @@ func (d *Group) FramedSize() (s uint64, us uint64) {
 		for k := range d.Members {
 
 			{
-				s += d.Members[k].Size()
+				s += d.Members[k].MarshaledSize()
 			}
 
 		}
@@ -194,7 +194,7 @@ func (d *Group) FramedSize() (s uint64, us uint64) {
 	}
 	return
 }
-func (d *Group) Size() (s uint64) {
+func (d *Group) MarshaledSize() (s uint64) {
 	s, _ = d.FramedSize()
 	return
 }
@@ -407,7 +407,7 @@ type A struct {
 	Children []string
 }
 
-func (d *A) Size() (s uint64) {
+func (d *A) MarshaledSize() (s uint64) {
 
 	{
 		l := uint64(len(d.Name))
@@ -478,7 +478,7 @@ func (d *A) Size() (s uint64) {
 	return
 }
 func (d *A) Marshal(buf []byte) ([]byte, error) {
-	size := d.Size()
+	size := d.MarshaledSize()
 	{
 		if uint64(cap(buf)) >= size {
 			buf = buf[:size]

@@ -34,7 +34,7 @@ type Person struct {
 	Age  uint8
 }
 
-func (d *Person) Size() (s uint64) {
+func (d *Person) MarshaledSize() (s uint64) {
  ...
 }
 func (d *Person) Marshal(buf []byte) ([]byte, error) {

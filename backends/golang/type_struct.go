@@ -31,7 +31,7 @@ func init() {
 	}`))
 	template.Must(StructTemps.New("size").Parse(`
 	{
-		s += {{.Target}}.Size()
+		s += {{.Target}}.MarshaledSize()
 	}`))
 	template.Must(StructTemps.New("field").Parse(`{{.Struct}}`))
 }
