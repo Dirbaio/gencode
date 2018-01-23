@@ -155,6 +155,21 @@ func (st *SliceType) Resolve(s *Schema) error {
 	return nil
 }
 
+type AliasType struct {
+	Alias   string
+	SubType Type
+}
+
+func (st *AliasType) Resolve(s *Schema) error {
+	if rt, ok := st.SubType.(ResolveType); ok {
+		err := rt.Resolve(s)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 type StringType struct {
 }
 

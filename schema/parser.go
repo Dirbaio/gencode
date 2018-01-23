@@ -21,6 +21,11 @@ func MakeGrammar() *Grammar {
 		return String(m), nil
 	})
 
+	gGoType := Mult(1, 0, Or(Letter, Digit, Set(".")))
+	gGoType.Node(func(m Match) (Match, error) {
+		return String(m), nil
+	})
+
 	gIntField := And(Optional(Tag("Var", Lit("v"))), Optional(Tag("Unsigned", Lit("u"))), Lit("int"), Tag("Bits", Or(Lit("8"), Lit("16"), Lit("32"), Lit("64"))))
 	gIntField.Node(func(m Match) (Match, error) {
 		bits, err := strconv.ParseInt(String(GetTag(m, "Bits")), 10, 64)
@@ -126,7 +131,15 @@ func MakeGrammar() *Grammar {
 		}, nil
 	})
 
-	gType.Set(Or(gSlice, gArray, gPointer, gIntField, gByteField, gBoolField, gStringField, gTimeField, gFloatField, gUnion, gDeferField))
+	gAlias := And(Tag("Alias", gGoType), Lit(":"), Require(Tag("SubType", gType)))
+	gAlias.Node(func(m Match) (Match, error) {
+		return &AliasType{
+			Alias:   String(GetTag(m, "Alias")),
+			SubType: GetTag(m, "SubType").(Type),
+		}, nil
+	})
+
+	gType.Set(Or(gSlice, gArray, gPointer, gIntField, gByteField, gBoolField, gStringField, gTimeField, gFloatField, gUnion, gAlias, gDeferField))
 
 	gStructTag := And(Tick, Mult(0, 0, Or(Any)), Tick)
 	gStructTag.Node(func(m Match) (Match, error) {
